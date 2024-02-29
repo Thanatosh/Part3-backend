@@ -10,11 +10,9 @@ const Person = require('./models/persons')
 app.use(cors())
 app.use(express.static('dist'))
 
-morgan.token('reqBody', (req, res) => JSON.stringify(req.body))
+morgan.token('reqBody', (req) => JSON.stringify(req.body))
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :reqBody'))
 app.use(express.json())
-
-let persons = []
 
 const errorHandler = (error, request, response, next) => {
   console.error(error.message)
@@ -76,7 +74,7 @@ app.put('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndDelete(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
